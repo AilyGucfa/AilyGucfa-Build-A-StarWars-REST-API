@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import requests
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -36,14 +37,51 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# @app.route('/user', methods=['GET'])
+# def handle_hello():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+#     response_body = {
+#         "msg": "Hello, this is your GET /user response "
+#     }
 
-    return jsonify(response_body), 200
+#     return jsonify(response_body), 200
+people_url = "https://www.swapi.tech/api/people"
+planets_url ="https://www.swapi.tech/api/planets"
+vehicles_url = "https://www.swapi.tech/api/vehicles"
+
+@app.route('/people', methods=['GET'])
+def get_all_people():
+    try:
+        response = requests.get(people_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        data = response.json()
+        return jsonify(data), 200
+    except requests.exceptions.RequestException as e:
+        return jsonify({'message': 'Error fetching data from SWAPI'}), 500
+    
+@app.route('/planets', methods=['GET'])
+def get_all_planets():
+        try:
+            response = requests.get(planets_url)
+            response.raise_for_status()
+
+            data =response.json()
+            return jsonify(data), 200
+        except requests.exceptions.RequestExceptions as e:
+            return jsonify ({'message': 'Error fetching data from SWAPI'}), 500
+        
+@app.route('/vehicles', methods =['GET'])
+def get_all_vehicles():
+    try:
+        response = requests.get(vehicles_url)
+        response.raise_for_status()
+
+        data = response.json()
+        return jsonify(data), 200
+    except requests.exceptions.RequestException as e:
+        return jsonify ({'message': 'Error fetching data from SWAPI'}), 500
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
