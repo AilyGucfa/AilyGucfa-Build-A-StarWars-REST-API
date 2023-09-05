@@ -94,4 +94,21 @@ class Vehicles(db.Model):
             "passengers" :self.passengers
         }
     
+class Favorite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    item_type = db.Column(db.String(50), nullable=False)
+    item_name = db.Column(db.String(50), nullable=False)  # Item name or identifier
+    user = db.relationship('User', backref='favorites')
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "item_type": self.item_type,
+            "item_name": self.item_name
+        }
+
+
+
 

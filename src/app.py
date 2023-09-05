@@ -9,7 +9,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People, Planets, Vehicles
+from models import db, User, People, Planets, Vehicles, Favorite
 #from models import Person
 
 app = Flask(__name__)
@@ -101,6 +101,24 @@ def get_single_vehicle(vehicle_id):
           return jsonify(vehicle1.serialize()),200
      
      return jsonify({'message': 'Vehicle not found!'}), 404
+
+@app.route('/add_favorite', methods=['POST'])
+def add_favorite():
+    request_data = request.get_json()
+    item_type = request_data.get('item_type').lower()  # Convert to lowercase
+    item_name= request_data.get('item_name')
+
+    # Validate item_type against a list of valid types (people, planets, vehicles)
+    valid_types = ["people", "planets", "vehicles"]
+    if item_type not in valid_types:
+        return jsonify({"message": "Invalid item type"}), 400
+
+    favorite = Favorite(item_name=item_name, item_type=item_type)
+    db.session.append(favorite)
+    db.session.commit()
+
+    return jsonify({"message": "Item added to favorites"}), 200
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
