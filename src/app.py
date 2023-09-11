@@ -119,6 +119,15 @@ def add_favorite():
 
     return jsonify({"message": "Item added to favorites"}), 200
 
+@app.route('/favorites', methods=['GET'])
+def handle_all_favorites():
+    if request.method == 'GET':
+        favorites = Favorite.query.all()
+        serialized_favorite = [favorites.serialize() for favorites in favorites]
+        return jsonify(serialized_favorite), 200
+    
+    else:
+         return jsonify({'message': 'Invalid request method'}), 404
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
