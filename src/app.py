@@ -111,7 +111,7 @@ def add_favorite():
     # Validate item_type against a list of valid types (people, planets, vehicles)
     valid_types = ["people", "planets", "vehicles"]
     if item_type not in valid_types:
-        return jsonify({"message": "Invalid item type"}), 400
+        return jsonify({"message": "Invalid item type!"}), 400
 
     favorite = Favorite(item_name=item_name, item_type=item_type)
     db.session.append(favorite)
